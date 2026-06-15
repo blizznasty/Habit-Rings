@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Current Season</title>
+
+<style>
+body{
+background:#f8f5f1;
+font-family:Georgia,serif;
+padding:20px;
+color:#7a6654;
+}
+
+h2{
+text-align:center;
+letter-spacing:2px;
+margin-bottom:25px;
+}
+
+.item{
+margin-bottom:22px;
+cursor:pointer;
+}
+
+.label{
+display:flex;
+justify-content:space-between;
+margin-bottom:6px;
+font-size:14px;
+}
+
+.bar{
+height:18px;
+background:#ebe4dc;
+border-radius:20px;
+overflow:hidden;
+}
+
+.fill{
+height:100%;
+background:#97a98a;
+transition:.3s;
+}
+
+.tip{
+font-size:11px;
+margin-top:4px;
+opacity:.7;
+}
+</style>
+</head>
+
+<body>
+
+<h2>🌿 CURRENT SEASON</h2>
+
+<div id="season"></div>
+
+<script>
+
+const goals=[
+{
+name:"Lose 15 Pounds",
+max:15,
+step:5,
+unit:"lbs"
+},
+{
+name:"Build Consistent Routines",
+max:100,
+step:5,
+unit:"%"
+},
+{
+name:"Create A Peaceful Home",
+max:100,
+step:5,
+unit:"%"
+},
+{
+name:"Journal Daily",
+max:100,
+step:5,
+unit:"%"
+},
+{
+name:"Strengthen Marriage",
+max:100,
+step:5,
+unit:"%"
+},
+{
+name:"Become More Confident",
+max:100,
+step:5,
+unit:"%"
+}
+];
+
+let data=JSON.parse(
+localStorage.getItem("currentSeason")
+|| "{}"
+);
+
+function save(){
+localStorage.setItem(
+"currentSeason",
+JSON.stringify(data)
+);
+}
+
+function draw(){
+
+let html="";
+
+goals.forEach(g=>{
+
+let val=data[g.name]||0;
+
+let pct=Math.round(
+(val/g.max)*100
+);
+
+html+=`
+<div class="item"
+onclick="increase('${g.name}')">
+
+<div class="label">
+<span>${g.name}</span>
+<span>${val}${g.unit}</span>
+</div>
+
+<div class="bar">
+<div class="fill"
+style="width:${pct}%">
+</div>
+</div>
+
+<div class="tip">
+Click to increase progress
+</div>
+
+</div>
+`;
+});
+
+document.getElementById(
+"season"
+).innerHTML=html;
+
+}
+
+function increase(name){
+
+let goal=goals.find(
+g=>g.name===name
+);
+
+data[name]=Math.min(
+goal.max,
+(data[name]||0)+goal.step
+);
+
+save();
+draw();
+
+}
+
+draw();
+
+</script>
+
+</body>
+</html>
